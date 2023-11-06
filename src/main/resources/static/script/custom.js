@@ -15,7 +15,7 @@
              setTimeout(()=>
                      {
                         location.reload(true);
-                      } ,2000);
+                      } ,4000);
 
 
 
@@ -29,7 +29,7 @@
             if (bodys[0].innerHTML.trim().length <10){
                 setTimeout(()=>  {
                        location.reload(true);
-                  } ,2000);
+                  } ,4000);
           }
        }
 
@@ -37,7 +37,7 @@
       if(progressBar != null){ setTimeout(()=>
                      {
                         location.reload(true);
-                      } ,2000);
+                      } ,4000);
       }
        /*
        const webblendBusySpinner = document.getElementById("webblendBusySpinner");
@@ -47,7 +47,7 @@
 */
       const pres = document.getElementsByTagName("pre");
       if(pres.length == 1){
-         setTimeout(()=>  { location.reload(); } ,2000);
+         setTimeout(()=>  { location.reload(true); } ,2000);
       }
 
 
@@ -57,7 +57,7 @@
         //alert(spans[0].aria-label="טוען")
           console.log( spans[0].hasAttribute["aria-label"] );
           if (spans[0].attributes["aria-label"].nodeValue ==="טוען" ){
-             location.reload(true)   ;
+             setTimeout(()=>  { location.reload(true); } ,2000);
 
           }
 
