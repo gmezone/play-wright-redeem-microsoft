@@ -95,7 +95,7 @@
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
                 <configuration>
-                    <mainClass>com.playwright.SpringBootSessionApplication</mainClass>
+                    <mainClass>com.gamingzone.redeem.SpringBootSessionApplication</mainClass>
                 </configuration>
                 <executions>
                     <execution>
