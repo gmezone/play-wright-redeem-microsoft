@@ -89,6 +89,17 @@ public class PlaywrightHandler {
     public ResponseEntity<String> getPage(HttpServletRequest request, HttpServletResponse response, HttpSession session) {
 
         try {
+            int pos = request.getRequestURL().indexOf(request.getRequestURI(),8);
+
+
+            homeHost = request.getRequestURL().substring(0, pos);
+            if (!homeHost.toLowerCase().contains("local")) {
+                homeHost = homeHost.replace("http://", "https://");
+            } else {
+                headless = false;
+            }
+            scriptUrl = homeHost + customScript;
+
             Page page = (Page) session.getAttribute("page");
             String[] args = //{"Hello", "World"};
                     {
@@ -143,14 +154,6 @@ public class PlaywrightHandler {
             System.out.println("request.getRequestURI()");
             System.out.println(request.getRequestURI());
 
-            int pos = request.getRequestURL().indexOf(request.getRequestURI(),8);
-
-
-            homeHost = request.getRequestURL().substring(0, pos);
-            if (!homeHost.toLowerCase().contains("local")) {
-                homeHost = homeHost.replace("http://", "https://");
-            }
-            scriptUrl = homeHost + customScript;
 
 
             System.out.println("request.getRequestURL() :" + request.getRequestURL());
@@ -272,4 +275,9 @@ public class PlaywrightHandler {
         }
     }
 
+    public void logof(HttpSession session) {
+        Page page = (Page) session.getAttribute("page");
+        page.close();
+       session.invalidate();
+    }
 }

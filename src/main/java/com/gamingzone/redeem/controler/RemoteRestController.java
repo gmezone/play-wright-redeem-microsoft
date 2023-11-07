@@ -57,6 +57,13 @@ public class RemoteRestController {
 
     }
 
+    @GetMapping("/logof")
+    public void logof(HttpSession session) {
+        playwrightHandler.logof(session);
+       // return  playwrightHandler.getTokenString(session);
+
+    }
+
     @PostMapping("/updateTokenString")
     public ResponseEntity<String> updateTokenString(HttpSession session, @RequestBody Field field) {
         return  playwrightHandler.updateTokenString(session ,field);
