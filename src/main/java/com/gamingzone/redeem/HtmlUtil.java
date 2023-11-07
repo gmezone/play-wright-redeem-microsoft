@@ -14,7 +14,7 @@ public class HtmlUtil {
         String host = url.substring(0, posHost);
         System.out.println(url);
         System.out.println(host);
-        if(!host.toLowerCase().contains("local")) {
+        if (!host.toLowerCase().contains("local")) {
             host = host.replace("http://", "https://");
         }
 
@@ -38,7 +38,7 @@ public class HtmlUtil {
             String href = link.attr("href");
             if (href.startsWith("/")) {
                 href = host + href;
-                link.attr("href" ,href);
+                link.attr("href", href);
             }
         }
         Elements as = doc.getElementsByTag("a");
@@ -46,7 +46,7 @@ public class HtmlUtil {
             String href = a.attr("href");
             if (href.startsWith("/")) {
                 href = host + href;
-                a.attr("href" ,href);
+                a.attr("href", href);
             }
         }
     }
@@ -59,7 +59,7 @@ public class HtmlUtil {
                 System.out.println(src);
                 src = host + src;
                 System.out.println(src);
-               // script.attr("src" ,src);
+                // script.attr("src" ,src);
             }
         }
 
@@ -69,11 +69,26 @@ public class HtmlUtil {
         Elements metas = doc.getElementsByTag("meta");
         for (Element meta : metas) {
             String httpEquiv = meta.attr("http-equiv");
-            if (httpEquiv != null && httpEquiv.equalsIgnoreCase("Refresh")){
-               meta.attr("content","0; URL=" + homeHost +"/");
+            if (httpEquiv != null && httpEquiv.equalsIgnoreCase("Refresh")) {
+                meta.attr("content", "0; URL=" + homeHost + "/");
             }
 
         }
 
+    }
+
+    public static void fixOnload(Document doc) {
+        Elements titles = doc.getElementsByTag("title");
+        if (titles.size() > 0) {
+            if (titles.first().val().equalsIgnoreCase("Continue")) {
+                Elements bodys = doc.getElementsByTag("body");
+                if (bodys.size() > 0) {
+                    if (bodys.first().hasClass("onload")) {
+                        bodys.first().removeAttr("onload");
+                    }
+                }
+
+            }
+        }
     }
 }

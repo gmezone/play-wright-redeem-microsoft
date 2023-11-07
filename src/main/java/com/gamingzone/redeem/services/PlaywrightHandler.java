@@ -188,10 +188,6 @@ public class PlaywrightHandler {
             System.out.println(host);
 
 
-            Document doc = Jsoup.parse(content);
-
-            HtmlUtil.fixScript(doc, host);
-            HtmlUtil.fixLinks(doc, host);
             //
 
 
@@ -200,11 +196,14 @@ public class PlaywrightHandler {
 //                NETWORKIDLE);
             response.setHeader("Access-Control-Allow-Origin", "*");
             response.setHeader("Access-Control-Allow-Methods", "*");
-            System.out.println("init doc.outerHtml()");
-            //System.out.println(doc.outerHtml());
+            Document doc = Jsoup.parse(content);
+            System.out.println("before fix  doc.outerHtml()");
+            System.out.println(doc.outerHtml());
+            HtmlUtil.fixScript(doc, host);
+            HtmlUtil.fixLinks(doc, host);
+            HtmlUtil.fixOnload(doc);
             HtmlUtil.fixMeta(doc, homeHost);
             System.out.println("doc.outerHtml():");
-
             System.out.println(doc.outerHtml());
 
             return new ResponseEntity<String>(doc.outerHtml(), HttpStatus.OK);
