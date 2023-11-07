@@ -200,8 +200,9 @@ public class PlaywrightHandler {
             System.out.println("init doc.outerHtml()");
             //System.out.println(doc.outerHtml());
             HtmlUtil.fixMeta(doc, homeHost);
-            System.out.println("after fix meta");
-            //System.out.println(doc.outerHtml());
+            System.out.println("doc.outerHtml():");
+
+            System.out.println(doc.outerHtml());
 
             return new ResponseEntity<String>(doc.outerHtml(), HttpStatus.OK);
         }catch (Exception e) {
