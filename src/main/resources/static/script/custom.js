@@ -11,7 +11,8 @@
                              ,5000);
        }
 */
-      if (document.title  === 'error'|| document.title  === 'WebBlends' ){
+      if (document.title  === 'error'|| document.title  === 'WebBlends' || document.title  === 'Continue'
+       || document.title  === 'Wait' ){
              setTimeout(()=>
                      {
                         location.reload(true);

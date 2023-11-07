@@ -213,7 +213,7 @@ public class PlaywrightHandler {
             System.out.println("--------------------------");
             String body = "<html lang=\"he-IL\">\n" +
                     " <head>\n" +
-                    "  <title>error</title>\n" +
+                    "  <title>Wait</title>\n" +
                     "<script src='" + scriptUrl + "'></script>" +
                     " </head>\n" +
                     " <body></body>";
