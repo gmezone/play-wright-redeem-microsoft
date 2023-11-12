@@ -38,6 +38,11 @@ public class SecurityConfiguration {
                 .securityMatcher("/**")
                 .authorizeHttpRequests(registry -> registry
                         //.requestMatchers( AntPathRequestMatcher.antMatcher("/public/**") ).permitAll()
+                        .requestMatchers( AntPathRequestMatcher.antMatcher("/resources/**") ).permitAll()
+                        .requestMatchers( AntPathRequestMatcher.antMatcher("/script/**") ).permitAll()
+                        .requestMatchers( AntPathRequestMatcher.antMatcher("/uniblends/**") ).permitAll()
+
+
                         .anyRequest().authenticated()
                 )
                 .addFilterBefore(authFilter, UsernamePasswordAuthenticationFilter.class)
