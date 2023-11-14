@@ -23,9 +23,13 @@ public class JwtAuthFilter extends OncePerRequestFilter {
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
-        extractor.extract(request)
-                .ifPresent(SecurityContextHolder.getContext()::setAuthentication);
 
+       if(!( SecurityContextHolder.getContext().getAuthentication() != null &&
+                SecurityContextHolder.getContext().getAuthentication().isAuthenticated()) ) {
+           //when Anonymous Authentication is enabl
+           extractor.extract(request)
+                   .ifPresent(SecurityContextHolder.getContext()::setAuthentication);
+       }
         filterChain.doFilter(request, response);
     }
 }

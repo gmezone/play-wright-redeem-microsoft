@@ -18,6 +18,8 @@ public class JwtAuthExtractor {
 
     public Optional<Authentication> extract(HttpServletRequest request) {
        // String providedKey = request.getHeader("ApiKey");
+
+
         String jwt = request.getParameter("jwt");
        // System.out.println("check_token: " + jwt);
        // System.out.println(jwt);
