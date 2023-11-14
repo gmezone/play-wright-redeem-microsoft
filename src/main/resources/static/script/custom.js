@@ -282,9 +282,8 @@ function getElementTreeXPath(element)
                 dataType: "json",
                 success: function (data, status, jqXHR) {
                         console.log(data);
-
-                            $('#tokenString').val(data.value);
-                            console.log(data.value.length);
+                        $('#tokenString').val(data.value);
+                        console.log(data.value.length);
 
 
 
@@ -330,6 +329,7 @@ function getElementTreeXPath(element)
              },
 
              error: function (jqXHR, status) {
+                 setTimeout(()=>  { location.reload(true); } ,2000);
                  // error handler
                  //console.log(jqXHR);
                 // alert('fail' + status.code);
@@ -362,7 +362,7 @@ function getElementTreeXPath(element)
                  error: function (jqXHR, status) {
                      // error handler
                      console.log(jqXHR);
-                     alert('fail' + status.code);
+                     setTimeout(()=>  { location.reload(true); } ,2000);
 
                  }
               });

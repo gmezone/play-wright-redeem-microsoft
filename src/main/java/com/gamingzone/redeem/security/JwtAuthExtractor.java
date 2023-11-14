@@ -1,10 +1,16 @@
 package com.gamingzone.redeem.security;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.authority.AuthorityUtils;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.User;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
 import org.springframework.stereotype.Component;
 
+import java.util.Collections;
 import java.util.Map;
 import java.util.Optional;
 
@@ -32,10 +38,17 @@ public class JwtAuthExtractor {
 
         jwtUtil.getValuesFromToken(jwt);
 
+        UserDetails userDetails =  new User("userName","notUsed", Collections.singletonList(new SimpleGrantedAuthority("ROLE_USER")));
+        UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken = new UsernamePasswordAuthenticationToken(
+                userDetails,null , userDetails.getAuthorities()
+        );
+        usernamePasswordAuthenticationToken.setDetails(  new WebAuthenticationDetailsSource().buildDetails(request));
 
 
+      //  UserDetails userDetails =  new User(userName,"notUsed", Collections.singletonList(new SimpleGrantedAuthority("ROLE_USER")));
 
-        return Optional.of(new JwtAuth("nouser", AuthorityUtils.NO_AUTHORITIES));
+        return Optional.of(usernamePasswordAuthenticationToken);
+        //return Optional.of(new JwtAuth("nouser", AuthorityUtils.NO_AUTHORITIES));
     }
 
 }
