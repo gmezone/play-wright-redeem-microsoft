@@ -186,6 +186,7 @@ public class PlaywrightHandler {
                     "src=\"https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js\">" +
                     "</script><script src='" + scriptUrl + "'></script></head>");
             content = content.replace("type=\"submit\"", "type=\"button\"");
+            content = content.replace("onload=\"javascript:DoSubmit();\"","");
             System.out.println(host);
 
 
