@@ -57,9 +57,9 @@ public class RemoteRestController {
 
     }
 
-    @GetMapping("/logof")
-    public void logof(HttpSession session) {
-        playwrightHandler.logof(session);
+    @GetMapping("/logoff")
+    public void logoff(HttpSession session) {
+        playwrightHandler.logoff(session);
        // return  playwrightHandler.getTokenString(session);
 
     }

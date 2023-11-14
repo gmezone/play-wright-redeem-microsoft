@@ -274,7 +274,7 @@ public class PlaywrightHandler {
         }
     }
 
-    public void logof(HttpSession session) {
+    public void logoff(HttpSession session) {
         Page page = (Page) session.getAttribute("page");
         page.close();
        session.invalidate();
