@@ -104,7 +104,7 @@ public class PlaywrightHandler {
             String[] args = //{"Hello", "World"};
                     {
                             //'--proxy-server=200.32.51.179:8080',
-                            "--proxy-server="+ proxyServer,
+                        //    "--proxy-server="+ proxyServer,
                             "--ignore-certificate-errors",
                             "--no-sandbox",
                             //'--disable-setuid-sandbox',
@@ -121,7 +121,8 @@ public class PlaywrightHandler {
                         new BrowserType.LaunchOptions().setHeadless(headless)
                                 .setArgs(Arrays.asList(args)).setProxy(new Proxy(proxyServer)
                                         .setUsername(proxyUsername)
-                                        .setPassword(proxyPassword)));
+                                        .setPassword(proxyPassword))
+                        );
                 BrowserContext context = browser.newContext();
                 page = context.newPage();
                 page.navigate(url);

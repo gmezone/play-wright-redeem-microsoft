@@ -19,19 +19,14 @@ public class JwtAuthExtractor {
     public Optional<Authentication> extract(HttpServletRequest request) {
        // String providedKey = request.getHeader("ApiKey");
         String jwt = request.getParameter("jwt");
-        System.out.println("check_token: " + jwt);
-        System.out.println(jwt);
+       // System.out.println("check_token: " + jwt);
+       // System.out.println(jwt);
 
         if (jwt == null ) {
 
             return Optional.empty();
         }
         Map<String ,Object> map = JwtUtil.decode(jwt);
-        System.out.println("map: "+ map);
-        System.out.println("jwt.length()");
-        System.out.println(jwt.length());
-        System.out.println("jwt.trim.length()");
-        System.out.println(jwt.trim().length());
 
         jwtUtil.getValuesFromToken(jwt);
 
