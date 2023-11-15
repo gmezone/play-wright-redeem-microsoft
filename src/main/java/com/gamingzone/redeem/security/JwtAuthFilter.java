@@ -65,8 +65,9 @@ public class JwtAuthFilter extends OncePerRequestFilter {
         System.out.println(request.getRequestURI());
         System.out.println("request.getUserPrincipal()");
         System.out.println(request.getUserPrincipal());
-       if(!( SecurityContextHolder.getContext().getAuthentication() != null &&
-                SecurityContextHolder.getContext().getAuthentication().isAuthenticated()) ) {
+        if(SecurityContextHolder.getContext().getAuthentication() == null){
+       //if(!( SecurityContextHolder.getContext().getAuthentication() != null &&
+       //            SecurityContextHolder.getContext().getAuthentication().isAuthenticated()) ) {
            //when Anonymous Authentication is enabl
            System.out.println("request.getRequestURI() x ");
            System.out.println(request.getRequestURI());

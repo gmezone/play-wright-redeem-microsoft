@@ -57,6 +57,12 @@ public class RemoteRestController {
 
     }
 
+    @GetMapping("/getTokenFromJwt")
+    public ResponseEntity<String> getTokenFromJwt(HttpSession session) {
+        return  playwrightHandler.getTokenFromJwt(session);
+
+    }
+
     @GetMapping("/logoff")
     public void logoff(HttpSession session) {
         playwrightHandler.logoff(session);

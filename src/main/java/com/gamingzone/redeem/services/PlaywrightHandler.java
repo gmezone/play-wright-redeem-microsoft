@@ -3,6 +3,7 @@ package com.gamingzone.redeem.services;
 import com.gamingzone.redeem.Field;
 import com.gamingzone.redeem.HtmlUtil;
 import com.gamingzone.redeem.controler.RemoteRestController;
+import com.gamingzone.redeem.security.JwtUtil;
 import com.microsoft.playwright.*;
 import com.microsoft.playwright.options.LoadState;
 import com.microsoft.playwright.options.Proxy;
@@ -23,6 +24,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 
 @Service
 public class PlaywrightHandler {
@@ -44,17 +46,15 @@ public class PlaywrightHandler {
     protected String proxyPassword;
 
 
-
     @Value("${headless}")
     protected boolean headless;
-
 
 
     @Value("${custom.script}")
     protected String customScript;
     protected String homeHost;
 
-    protected String  scriptUrl;
+    protected String scriptUrl;
 
 
     @PostMapping("/click")
@@ -71,7 +71,7 @@ public class PlaywrightHandler {
         //String next = request.getRequestURL().substring(0, pos);
         String nextUrl = "";
         System.out.println("page.title():" + page.title());
-        nextUrl = homeHost ;//+ "/";
+        nextUrl = homeHost;//+ "/";
 /*
         if (!(page.title().equalsIgnoreCase("Microsoft account | Redeem your code or gift card")
                 || page.title().equalsIgnoreCase("Microsoft account | ממש את קוד או כרטיס המתנה שלך"))) {
@@ -89,8 +89,17 @@ public class PlaywrightHandler {
     public ResponseEntity<String> getPage(HttpServletRequest request, HttpServletResponse response, HttpSession session) {
 
         try {
-            int pos = request.getRequestURL().indexOf(request.getRequestURI(),8);
+            int pos = request.getRequestURL().indexOf(request.getRequestURI(), 8);
 
+            String jwt = request.getParameter("jwt");
+            if (jwt != null) {
+                Map<String, Object> map = JwtUtil.decode(jwt);
+
+                if (map.get("KEY") != null) {
+                    request.getSession().setAttribute("KEY", map.get("KEY"));
+
+                }
+            }
 
             homeHost = request.getRequestURL().substring(0, pos);
             if (!homeHost.toLowerCase().contains("local")) {
@@ -104,7 +113,7 @@ public class PlaywrightHandler {
             String[] args = //{"Hello", "World"};
                     {
                             //'--proxy-server=200.32.51.179:8080',
-                        //    "--proxy-server="+ proxyServer,
+                            //    "--proxy-server="+ proxyServer,
                             "--ignore-certificate-errors",
                             "--no-sandbox",
                             //'--disable-setuid-sandbox',
@@ -122,7 +131,7 @@ public class PlaywrightHandler {
                                 .setArgs(Arrays.asList(args)).setProxy(new Proxy(proxyServer)
                                         .setUsername(proxyUsername)
                                         .setPassword(proxyPassword))
-                        );
+                );
                 BrowserContext context = browser.newContext();
                 page = context.newPage();
                 page.navigate(url);
@@ -156,27 +165,29 @@ public class PlaywrightHandler {
             System.out.println(request.getRequestURI());
 
 
-
             System.out.println("request.getRequestURL() :" + request.getRequestURL());
 
             System.out.println("page.title()");
             System.out.println(page.title());
 
             System.out.println("scriptUrl :" + scriptUrl);
-            String content ="";
-            String host ="";
-            if (page.title().equalsIgnoreCase("Microsoft account | ממש את קוד או כרטיס המתנה שלך")){
+            String content = "";
+            String host = "";
+            if (page.title().equalsIgnoreCase("Microsoft account | ממש את קוד או כרטיס המתנה שלך")) {
 
                 List<Frame> frames = page.frames();
                 Frame frame = frames.get(0);
 
                 List<Frame> innerFrame = frame.childFrames();
                 innerFrame.get(0).waitForLoadState();
+                Locator tokenLocator = innerFrame.get(0).locator("//*[@id=\"tokenString\"]");
+
+
                 content = innerFrame.get(0).content();
                 host = HtmlUtil.getFrameHost(innerFrame.get(0));
 
 
-            } else{
+            } else {
                 page.waitForLoadState(LoadState.LOAD);
                 content = page.content();
                 host = HtmlUtil.getHost(page);
@@ -186,7 +197,7 @@ public class PlaywrightHandler {
                     "src=\"https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js\">" +
                     "</script><script src='" + scriptUrl + "'></script></head>");
             content = content.replace("type=\"submit\"", "type=\"button\"");
-            content = content.replace("onload=\"javascript:DoSubmit();\"","");
+            content = content.replace("onload=\"javascript:DoSubmit();\"", "");
             System.out.println(host);
 
 
@@ -209,7 +220,7 @@ public class PlaywrightHandler {
             System.out.println(doc.outerHtml());
 
             return new ResponseEntity<String>(doc.outerHtml(), HttpStatus.OK);
-        }catch (Exception e) {
+        } catch (Exception e) {
             e.printStackTrace();
             System.out.println("--------------------------");
             String body = "<html lang=\"he-IL\">\n" +
@@ -233,24 +244,40 @@ public class PlaywrightHandler {
         return new ResponseEntity<String>("{\"ret\":\"ok\"}", HttpStatus.OK);
     }
 
-    @GetMapping("/getTokenString")
     public ResponseEntity<String> getTokenString(HttpSession session) {
         Page page = (Page) session.getAttribute("page");
         List<Frame> frames = page.frames();
         Frame frame = frames.get(0);
         List<Frame> innerFrames = frame.childFrames();
         Frame innerFrame = innerFrames.get(0);
-        String value = innerFrame.locator("//*[@id=\"tokenString\"]").inputValue();
+        Locator tokenLocator = innerFrame.locator("//*[@id=\"tokenString\"]");
+        String value = tokenLocator.inputValue();
         return new ResponseEntity<String>("{\"ret\":\"ok\" ,\"value\": \"" + value + "\" }", HttpStatus.OK);
     }
 
+    public ResponseEntity<String> getTokenFromJwt(HttpSession session) {
 
-    @PostMapping("/updateTokenString")
+
+        Boolean taken = (Boolean) session.getAttribute("taken");
+        String retValue = "";
+        if (taken == null) {
+            String value = (String) session.getAttribute("KEY");
+            if (value == null) {
+                retValue = "";
+            } else {
+                retValue = value;
+            }
+            session.setAttribute("taken", true);
+        }
+        return new ResponseEntity<String>("{\"ret\":\"ok\" ,\"value\": \"" + retValue + "\" }", HttpStatus.OK);
+    }
+
+
     public ResponseEntity<String> updateTokenString(HttpSession session, @RequestBody Field field) {
         System.out.println(field);
         Page page = (Page) session.getAttribute("page");
 
-        List<Frame> frames =                                                                                                                                                                                                                    page.frames();
+        List<Frame> frames = page.frames();
 //        for (Frame frame : frames) {
 //            frame.waitForLoadState();
 //        }
@@ -279,6 +306,6 @@ public class PlaywrightHandler {
     public void logoff(HttpSession session) {
         Page page = (Page) session.getAttribute("page");
         page.close();
-       session.invalidate();
+        session.invalidate();
     }
 }

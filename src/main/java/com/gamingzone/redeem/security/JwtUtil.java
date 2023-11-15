@@ -7,6 +7,7 @@ import org.jose4j.jwe.KeyManagementAlgorithmIdentifiers;
 import org.jose4j.keys.AesKey;
 import org.json.JSONObject;
 import org.springframework.core.io.ClassPathResource;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.jwt.Jwt;
 import org.springframework.security.jwt.JwtHelper;
 import org.springframework.security.jwt.crypto.sign.RsaSigner;
@@ -79,7 +80,23 @@ public class JwtUtil {
         return decode(token);
 
     }
-    static protected Map<String , Object> decode(String token){
+
+    public boolean validateToken(Map<String , Object> jwtValues ){
+        return  (!isTokenExpired(jwtValues));
+    }
+
+    private boolean isTokenExpired(Map<String, Object> jwtValues) {
+        Date exDate;
+        if (jwtValues.get(EXP) instanceof  String){
+            exDate = new Date(Long.parseLong((String) jwtValues.get(EXP) ) * 1000L);
+        } else {
+            Integer d =(Integer) jwtValues.get(EXP);
+            exDate = new Date(d * 1000L);
+        }
+        return  exDate.before(new Date());
+    }
+
+    public static Map<String , Object> decode(String token){
         Map<String ,Object> map = null;
         try{
             Jwt jwt = JwtHelper.decodeAndVerify(token,verifier);

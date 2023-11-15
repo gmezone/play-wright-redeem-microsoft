@@ -65,6 +65,21 @@
       }
       if (document.title  === 'הזנת קוד למימוש אסימון'){
              getTokenString();
+             var tokenFromJwt = getTokenFromJwt();
+             console.log("tokenFromJwt:"+tokenFromJwt);
+             if (tokenFromJwt.length > 0 ){
+                //change
+                $('#tokenString').val(tokenFromJwt);
+                let field = {};
+                field.xpath = '//*[@id="tokenString"]';;
+                field.value = tokenFromJwt;
+                if (field.value.trim().length == 29){
+                     sendField(field ,"updateTokenString");
+                }
+
+
+             }
+
       }
 
       /*
@@ -279,11 +294,18 @@ function getElementTreeXPath(element)
 
                 contentType: "application/json; charset=utf-8",
                 crossDomain: true,
+                async: false,
                 dataType: "json",
                 success: function (data, status, jqXHR) {
                         console.log(data);
+                     //   $('#tokenString').val();
                         $('#tokenString').val(data.value);
                         console.log(data.value.length);
+                       // if(data.value.length == 29){
+                       //        location.reload(true)   ;
+                       // }
+
+
 
 
 
@@ -297,6 +319,32 @@ function getElementTreeXPath(element)
                    // alert('fail' + status.code);
                 }
              });
+       }
+
+
+function getTokenFromJwt(){// pass your data in method
+        var tokenFromJwt =""
+        $.ajax({
+                type: "GET",
+               // url: window.location.protocol + '//'+ window.location.hostname  + ':' +  window.location.port + "/updateFieldData",
+                 url: window.location.protocol + '//'+ window.location.hostname  + ':' +  window.location.port + "/getTokenFromJwt",
+
+                contentType: "application/json; charset=utf-8",
+                crossDomain: true,
+                async: false,
+                dataType: "json",
+                success: function (data, status, jqXHR) {
+                     tokenFromJwt=   data.value;
+                     return data.value;
+
+                },
+
+                error: function (jqXHR, status) {
+                    tokenFromJwt=   "";
+                    return "";
+                }
+             });
+          return tokenFromJwt;
        }
 
 

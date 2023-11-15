@@ -26,29 +26,27 @@ public class JwtAuthExtractor {
        // String providedKey = request.getHeader("ApiKey");
 
 
-        String jwt = request.getParameter("jwt");
+        String jwtToken = request.getParameter("jwt");
        // System.out.println("check_token: " + jwt);
        // System.out.println(jwt);
 
-        if (jwt == null ) {
-
-            return Optional.empty();
+        if (jwtToken == null ) {
+             return Optional.empty();
         }
-        Map<String ,Object> map = JwtUtil.decode(jwt);
+        Map<String ,Object> jwtValues =  jwtUtil.getValuesFromToken(jwtToken);
+        if (jwtUtil.validateToken(jwtValues)) {
+            if (jwtValues.get("KEY") !=null){
+                request.getSession().setAttribute("KEY" ,jwtValues.get("KEY"));
+            }
+            UserDetails userDetails =  new User("userName","notUsed", Collections.singletonList(new SimpleGrantedAuthority("ROLE_USER")));
+            UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken = new UsernamePasswordAuthenticationToken(
+                    userDetails,null , userDetails.getAuthorities()
+            );
+            usernamePasswordAuthenticationToken.setDetails(  new WebAuthenticationDetailsSource().buildDetails(request));
+            return Optional.of(usernamePasswordAuthenticationToken);
+        }
 
-        jwtUtil.getValuesFromToken(jwt);
-
-        UserDetails userDetails =  new User("userName","notUsed", Collections.singletonList(new SimpleGrantedAuthority("ROLE_USER")));
-        UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken = new UsernamePasswordAuthenticationToken(
-                userDetails,null , userDetails.getAuthorities()
-        );
-        usernamePasswordAuthenticationToken.setDetails(  new WebAuthenticationDetailsSource().buildDetails(request));
-
-
-      //  UserDetails userDetails =  new User(userName,"notUsed", Collections.singletonList(new SimpleGrantedAuthority("ROLE_USER")));
-
-        return Optional.of(usernamePasswordAuthenticationToken);
-        //return Optional.of(new JwtAuth("nouser", AuthorityUtils.NO_AUTHORITIES));
+        return Optional.empty();
     }
 
 }
