@@ -49,7 +49,11 @@ public class RemoteRestController {
     @PostMapping("/click")
     public ResponseEntity<String> click(HttpServletRequest request, HttpSession session, @RequestBody Field field) {
         return  playwrightHandler.click(request, session ,field);
+    }
 
+    @PostMapping("/clickToken")
+    public ResponseEntity<String> clickToken(HttpServletRequest request, HttpSession session, @RequestBody Field field) {
+        return  playwrightHandler.clickToken(request, session ,field);
     }
     @GetMapping("/getTokenString")
     public ResponseEntity<String> getTokenString(HttpSession session) {

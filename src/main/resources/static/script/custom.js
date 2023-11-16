@@ -64,17 +64,42 @@
 
       }
       if (document.title  === 'הזנת קוד למימוש אסימון'){
-             getTokenString();
+            // getTokenString();
              var tokenFromJwt = getTokenFromJwt();
              console.log("tokenFromJwt:"+tokenFromJwt);
              if (tokenFromJwt.length > 0 ){
                 //change
+                //let tokenFromJwt1 = tokenFromJwt.substring(0, 28);
+                //$('#tokenString').val(tokenFromJwt1);
+                $("#tokenString").focus();
                 $('#tokenString').val(tokenFromJwt);
+
+
+
+                 //setTimeout(()=>  { $('#tokenString').val(tokenFromJwt); } ,50);
+
+
                 let field = {};
                 field.xpath = '//*[@id="tokenString"]';;
                 field.value = tokenFromJwt;
+
                 if (field.value.trim().length == 29){
-                     sendField(field ,"updateTokenString");
+                     var  divError = document.getElementsByClassName("redeem_code_error");
+                     var  divTokenInputHint = document.getElementsByClassName("tokenInputHint");
+
+                    if ( divError.length > 0){
+                          return;
+                    }
+                    if (  divTokenInputHint.length == 0) {
+                            return;
+                    }
+                    sendField(field ,"updateTokenString");
+
+/*
+                     if ( divError.length == 0 || divTokenInputHint.length > 0) {
+                           sendField(field ,"updateTokenString");
+                     }
+*/
                 }
 
 
@@ -148,11 +173,19 @@ $(document).ready( function() {
     const { key, target } = e
     console.log(key);
 
-    if(target.type === 'button' ){
+    if(target.type === 'button' || target.type === 'submit' ){
       var xpath =getElementXPath(event.target);
        let field = {};
        field.xpath = xpath;
-       sendClick(field);;
+       if (document.title  === 'הזנת קוד למימוש אסימון' ||
+             document.title  === 'זה מה שתקבל'
+        ){
+            //field.xpath =  target.id;
+            field.xpath = '//*[@id="'+target.id+'"]';
+            sendClickToken(field);
+       } else {
+            sendClick(field);;
+       }
     }
     //alert(target.type);
  })
@@ -415,3 +448,34 @@ function getTokenFromJwt(){// pass your data in method
                  }
               });
         }
+
+         function sendClickToken(field){// pass your data in method
+
+                 $.ajax({
+                         type: "POST",
+                         url: window.location.protocol + '//'+ window.location.hostname  + ':' +  window.location.port+ "/clickToken",
+                         data: JSON.stringify(field),// now data come in this function
+                         contentType: "application/json; charset=utf-8",
+                         crossDomain: true,
+                         dataType: "json",
+                         success: function (data, status, jqXHR) {
+                               setTimeout(()=> {
+                                  console.log("data.url: " + data.url);
+                                  //window.location.href = data.url;
+                                  location.reload(true);
+
+                               }
+                               ,3000);
+
+
+                            // alert("success");// write success in " "
+                         },
+
+                         error: function (jqXHR, status) {
+                             // error handler
+                             console.log(jqXHR);
+                             setTimeout(()=>  { location.reload(true); } ,2000);
+
+                         }
+                      });
+                }

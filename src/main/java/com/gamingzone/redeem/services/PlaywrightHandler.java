@@ -19,6 +19,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.oauth2.common.exceptions.InvalidTokenException;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -60,7 +61,6 @@ public class PlaywrightHandler {
     protected String scriptUrl;
 
 
-    @PostMapping("/click")
     public ResponseEntity<String> click(HttpServletRequest request, HttpSession session, @RequestBody Field field) {
         System.out.println(field);
         Page page = (Page) session.getAttribute("page");
@@ -87,6 +87,26 @@ public class PlaywrightHandler {
 */
         return new ResponseEntity<String>("{\"url\":\"" + nextUrl + "\"}", HttpStatus.OK);
     }
+
+    public ResponseEntity<String> clickToken(HttpServletRequest request, HttpSession session, @RequestBody Field field) {
+        Page page = (Page) session.getAttribute("page");
+        List<Frame> frames = page.frames();
+        Frame frame = frames.get(0);
+        List<Frame> innerFrames = frame.childFrames();
+        //innerFrame.get(0).waitForLoadState();
+        Frame innerFrame = innerFrames.get(0);
+      //  String nextTokenBtn = "//*[@id=\""+ field.getXpath()+ "\"]";
+        innerFrame.locator(field.getXpath()).click();
+        innerFrame.waitForLoadState(LoadState.NETWORKIDLE);
+        innerFrame.waitForLoadState(LoadState.LOAD);
+        innerFrame.waitForLoadState(LoadState.DOMCONTENTLOADED);
+
+        String nextUrl = "";
+        System.out.println("page.title():" + page.title());
+        nextUrl = homeHost;//+ "/";
+        return new ResponseEntity<String>("{\"url\":\"" + nextUrl + "\"}", HttpStatus.OK);
+    }
+
 
 
     public ResponseEntity<String> getPage(HttpServletRequest request, HttpServletResponse response, HttpSession session) {
@@ -281,6 +301,9 @@ public class PlaywrightHandler {
                     " <body></body>";
 
             */
+            if ( e instanceof  InvalidTokenException){
+                return new ResponseEntity<String>( HttpStatus.NETWORK_AUTHENTICATION_REQUIRED);
+            }
             return getPage( request,  response,  session);
             //return new ResponseEntity<String>(body, HttpStatus.OK);
         }
@@ -309,18 +332,18 @@ public class PlaywrightHandler {
     public ResponseEntity<String> getTokenFromJwt(HttpSession session) {
 
 
-        Boolean taken = (Boolean) session.getAttribute("taken");
+        /*Boolean taken = (Boolean) session.getAttribute("taken");
         String retValue = "";
-        if (taken == null) {
+        if (taken == null) {*/
             String value = (String) session.getAttribute("KEY");
-            if (value == null) {
-                retValue = "";
-            } else {
-                retValue = value;
-            }
-            session.setAttribute("taken", true);
+            //session.setAttribute("taken", true);
+        /*if (value == null) {
+            retValue = "";
+        } else {
+            retValue = value;
         }
-        return new ResponseEntity<String>("{\"ret\":\"ok\" ,\"value\": \"" + retValue + "\" }", HttpStatus.OK);
+    }*/
+        return new ResponseEntity<String>("{\"ret\":\"ok\" ,\"value\": \"" + value + "\" }", HttpStatus.OK);
     }
 
 
@@ -329,11 +352,6 @@ public class PlaywrightHandler {
         Page page = (Page) session.getAttribute("page");
 
         List<Frame> frames = page.frames();
-//        for (Frame frame : frames) {
-//            frame.waitForLoadState();
-//        }
-
-
         Frame frame = frames.get(0);
 
         List<Frame> innerFrames = frame.childFrames();
