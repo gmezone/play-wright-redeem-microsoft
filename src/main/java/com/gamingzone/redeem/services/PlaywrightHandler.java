@@ -25,6 +25,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
 
 @Service
 public class PlaywrightHandler {
@@ -187,6 +188,7 @@ public class PlaywrightHandler {
                 host = HtmlUtil.getFrameHost(innerFrame.get(0));
 
 
+
             } else {
                 page.waitForLoadState(LoadState.LOAD);
                 content = page.content();
@@ -216,13 +218,28 @@ public class PlaywrightHandler {
             HtmlUtil.fixLinks(doc, host);
             HtmlUtil.fixOnload(doc);
             HtmlUtil.fixMeta(doc, homeHost);
+            String title = doc.title();
+            System.out.println("title:" + title);
             System.out.println("doc.outerHtml():");
             System.out.println(doc.outerHtml());
+            if (title.equalsIgnoreCase("WebBlends") || title.equalsIgnoreCase("Continue")){
+                TimeUnit.SECONDS.sleep(2);
+                return getPage( request,  response,  session);
+            }
+
+
+            /*
+                if
+                  if (document.title  === 'error'|| document.title  === 'WebBlends' || document.title  === 'Continue'
+       || document.title  === 'Wait' )
+             */
 
             return new ResponseEntity<String>(doc.outerHtml(), HttpStatus.OK);
         } catch (Exception e) {
             e.printStackTrace();
+
             System.out.println("--------------------------");
+            /*
             String body = "<html lang=\"he-IL\">\n" +
                     " <head>\n" +
                     "  <title>Wait</title>\n" +
@@ -230,8 +247,9 @@ public class PlaywrightHandler {
                     " </head>\n" +
                     " <body></body>";
 
-
-            return new ResponseEntity<String>(body, HttpStatus.OK);
+            */
+            return getPage( request,  response,  session);
+            //return new ResponseEntity<String>(body, HttpStatus.OK);
         }
 
 

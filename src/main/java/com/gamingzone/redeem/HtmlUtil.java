@@ -51,6 +51,10 @@ public class HtmlUtil {
         }
     }
 
+    static  public String getTitle(Document doc){
+        return doc.getElementsByTag("title").val();
+
+    }
     static public void fixScript(Document doc, String host) {
         Elements scripts = doc.getElementsByTag("script");
         for (Element script : scripts) {
