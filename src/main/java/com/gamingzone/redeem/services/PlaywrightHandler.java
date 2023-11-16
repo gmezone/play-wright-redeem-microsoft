@@ -12,6 +12,8 @@ import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
+import org.jsoup.nodes.Element;
+import org.jsoup.select.Elements;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
@@ -222,23 +224,49 @@ public class PlaywrightHandler {
             System.out.println("title:" + title);
             System.out.println("doc.outerHtml():");
             System.out.println(doc.outerHtml());
+
             if (title.equalsIgnoreCase("WebBlends") || title.equalsIgnoreCase("Continue")){
-                TimeUnit.SECONDS.sleep(2);
-                return getPage( request,  response,  session);
+                throw new Exception(" WebBlends Continue ");
+            }
+
+            Elements elements = doc.getElementsByTag("body");
+            if (elements.size() == 0) {
+                 throw new Exception(" reload body 0 ");
+            }
+            if (elements.get(0).toString().trim().length() <10) {
+                 throw new Exception(" reload body < 10 ");
+            }
+            Element progressBar = doc.getElementById("progressBar");
+
+            if(progressBar != null){
+                throw new Exception(" reload progressBar ");
+            }
+            Elements pres = doc.getElementsByTag("pre");
+            if(pres.size() == 1){
+                throw new Exception(" reload pre ");
             }
 
 
-            /*
-                if
-                  if (document.title  === 'error'|| document.title  === 'WebBlends' || document.title  === 'Continue'
-       || document.title  === 'Wait' )
-             */
+            Elements  spans = doc.getElementsByTag("span");
+
+            if(spans.size() > 0){
+                //alert(spans[0].aria-label="טוען")
+                //console.log( spans[0].hasAttribute["aria-label"] );
+                if (spans.get(0).hasAttr("aria-label") &&
+                        spans.get(0).attr("aria-label").equals("טוען" )){
+                    throw new Exception(" reload טוען ");
+                }
+
+            }
+
+
+
 
             return new ResponseEntity<String>(doc.outerHtml(), HttpStatus.OK);
         } catch (Exception e) {
             e.printStackTrace();
             try {
-                  TimeUnit.SECONDS.sleep(2);
+                  TimeUnit.SECONDS.sleep(3);
             } catch (InterruptedException ex) { }
 
 
