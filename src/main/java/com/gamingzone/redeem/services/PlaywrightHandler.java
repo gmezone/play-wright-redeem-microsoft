@@ -237,6 +237,11 @@ public class PlaywrightHandler {
             return new ResponseEntity<String>(doc.outerHtml(), HttpStatus.OK);
         } catch (Exception e) {
             e.printStackTrace();
+            try {
+                  TimeUnit.SECONDS.sleep(2);
+            } catch (InterruptedException ex) { }
+
+
 
             System.out.println("--------------------------");
             /*
