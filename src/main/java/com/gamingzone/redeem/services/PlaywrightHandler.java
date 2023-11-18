@@ -113,16 +113,21 @@ public class PlaywrightHandler {
 
         try {
             int pos = request.getRequestURL().indexOf(request.getRequestURI(), 8);
-
+            boolean isNewJwt = false;
             String jwt = request.getParameter("jwt");
             if (jwt != null) {
+                String oldJwt = (String)session.getAttribute("jwt");
+                isNewJwt = !(oldJwt !=null && oldJwt.equals(jwt));
+                session.setAttribute("jwt" ,jwt);
                 Map<String, Object> map = JwtUtil.decode(jwt);
 
                 if (map.get("KEY") != null) {
-                    request.getSession().setAttribute("KEY", map.get("KEY"));
-
+                    session.setAttribute("KEY", map.get("KEY"));
+                    System.out.println("session.getAttribute(\"KEY\")");
+                    System.out.println(session.getAttribute("KEY"));
                 }
             }
+
 
             homeHost = request.getRequestURL().substring(0, pos);
             if (!homeHost.toLowerCase().contains("local")) {
@@ -162,7 +167,10 @@ public class PlaywrightHandler {
                 session.setAttribute("page", page);
             }
 
-
+            if(isNewJwt){
+                page.navigate(url);
+                page.waitForLoadState(LoadState.NETWORKIDLE);
+            }
             // page.setDefaultTimeout(100000);
 
             //page.navigate("https://redeem.microsoft.com");
@@ -203,9 +211,19 @@ public class PlaywrightHandler {
 
                 List<Frame> innerFrame = frame.childFrames();
                 innerFrame.get(0).waitForLoadState();
+         /*
                 Locator tokenLocator = innerFrame.get(0).locator("//*[@id=\"tokenString\"]");
+                if (session.getAttribute("KEY") != null) {
+                    tokenLocator.type((String) session.getAttribute("KEY"));
+                    innerFrame.get(0).waitForLoadState(LoadState.LOAD);
+                    innerFrame.get(0).waitForLoadState(LoadState.NETWORKIDLE);
+                    innerFrame.get(0).waitForLoadState(LoadState.LOAD);
+                    innerFrame.get(0).waitForLoadState(LoadState.DOMCONTENTLOADED);
+                    //innerFrame.get(0).waitFor
+                    innerFrame.get(0).waitForSelector("input[id=tokenString]");
 
-
+                }
+*/
                 content = innerFrame.get(0).content();
                 host = HtmlUtil.getFrameHost(innerFrame.get(0));
 

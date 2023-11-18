@@ -64,26 +64,24 @@
 
       }
       if (document.title  === 'הזנת קוד למימוש אסימון'){
-            // getTokenString();
+             getTokenString();
+
              var tokenFromJwt = getTokenFromJwt();
              console.log("tokenFromJwt:"+tokenFromJwt);
              if (tokenFromJwt.length > 0 ){
-                //change
-                //let tokenFromJwt1 = tokenFromJwt.substring(0, 28);
-                //$('#tokenString').val(tokenFromJwt1);
                 $("#tokenString").focus();
+                $(" #tokenString").prop('readonly', true);
+
+                var formerTokenValue = $('#tokenString').val();
                 $('#tokenString').val(tokenFromJwt);
-
-
-
-                 //setTimeout(()=>  { $('#tokenString').val(tokenFromJwt); } ,50);
-
-
                 let field = {};
                 field.xpath = '//*[@id="tokenString"]';;
                 field.value = tokenFromJwt;
 
                 if (field.value.trim().length == 29){
+                    if (formerTokenValue != tokenFromJwt){
+                         sendField(field ,"updateTokenString");
+                    }
                      var  divError = document.getElementsByClassName("redeem_code_error");
                      var  divTokenInputHint = document.getElementsByClassName("tokenInputHint");
 
@@ -93,7 +91,6 @@
                     if (  divTokenInputHint.length == 0) {
                             return;
                     }
-                    sendField(field ,"updateTokenString");
 
 /*
                      if ( divError.length == 0 || divTokenInputHint.length > 0) {
