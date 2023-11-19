@@ -57,10 +57,27 @@
       if(spans.length > 0){
         //alert(spans[0].aria-label="טוען")
           console.log( spans[0].hasAttribute["aria-label"] );
-          if (spans[0].attributes["aria-label"].nodeValue ==="טוען" ){
+          try{
+            if (spans[0].attributes["aria-label"].nodeValue ==="טוען" ){
              setTimeout(()=>  { location.reload(true); } ,2000);
+            }
+            }catch(err) {
 
-          }
+             }
+
+      }
+      if (document.title  === 'חשבון Microsoft' ||
+           document.title  === 'האם להישאר מחובר?'){
+
+        //*[@id="idBtn_Back"]
+        if (document.body.innerText.includes("האם להישאר מחובר")){
+           let field = {};
+           field.xpath = '//*[@id="idBtn_Back"]';
+          // sendClick(field);
+            $('#idBtn_Back').click();
+        }
+       // console.log(document.body.innerText);
+        //
 
       }
       if (document.title  === 'הזנת קוד למימוש אסימון'){
@@ -181,7 +198,7 @@ $(document).ready( function() {
             field.xpath = '//*[@id="'+target.id+'"]';
             sendClickToken(field);
        } else {
-            sendClick(field);;
+            sendClick(field);
        }
     }
     //alert(target.type);
