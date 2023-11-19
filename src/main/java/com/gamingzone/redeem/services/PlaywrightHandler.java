@@ -137,6 +137,7 @@ public class PlaywrightHandler {
             }
             scriptUrl = homeHost + customScript;
 
+            System.out.println("proxyServer:" + proxyServer);
             Page page = (Page) session.getAttribute("page");
             String[] args = //{"Hello", "World"};
                     {
