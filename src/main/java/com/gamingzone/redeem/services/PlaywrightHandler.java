@@ -5,6 +5,7 @@ import com.gamingzone.redeem.HtmlUtil;
 import com.gamingzone.redeem.controler.RemoteRestController;
 import com.gamingzone.redeem.security.JwtUtil;
 import com.microsoft.playwright.*;
+import com.microsoft.playwright.options.BoundingBox;
 import com.microsoft.playwright.options.LoadState;
 import com.microsoft.playwright.options.Proxy;
 import jakarta.servlet.http.HttpServletRequest;
@@ -332,8 +333,13 @@ public class PlaywrightHandler {
 
     public ResponseEntity<String> updateFieldData(HttpSession session, Field field) {
         Page page = (Page) session.getAttribute("page");
-        page.locator(field.getXpath()).clear();
-        page.locator(field.getXpath()).type(field.getValue());
+         if (!field.getType().equals("radio")){
+            page.locator(field.getXpath()).clear();
+            page.locator(field.getXpath()).type(field.getValue());
+
+        }else{
+             page.locator(field.getXpath()).click();
+        }
         return new ResponseEntity<String>("{\"ret\":\"ok\"}", HttpStatus.OK);
     }
 

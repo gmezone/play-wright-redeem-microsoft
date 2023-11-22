@@ -144,10 +144,13 @@ $(document).ready( function() {
  })
  document.addEventListener('change', (e) => {
        var xpath =getElementXPath(event.target);
+       var type = $(event.target).attr('type');
+        console.log("type:" +type);
         const { key, target } = e
 
       let field = {};
       field.xpath = xpath;
+      field.type = type;
       field.value = event.target.value;
       if (target.id ==='tokenString'){
          if (field.value.trim().length == 29){
@@ -408,6 +411,9 @@ function getTokenFromJwt(){// pass your data in method
              dataType: "json",
              success: function (data, status, jqXHR) {
                      console.log(data);
+                       if (field.type === 'radio'){
+                              location.reload(true)   ;
+                       }
 
                       if (path === 'updateTokenString'){
                          $('#tokenString').val(data.value);

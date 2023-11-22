@@ -4,6 +4,16 @@ public class Field {
     private String value;
     private String xpath;
 
+    private String type;
+
+    public String getType() {
+        return type;
+    }
+
+    public void setType(String type) {
+        this.type = type;
+    }
+
     public String getValue() {
         return value;
     }
@@ -25,6 +35,7 @@ public class Field {
         return "Field{" +
                 "value='" + value + '\'' +
                 ", xpath='" + xpath + '\'' +
+                ", type='" + type + '\'' +
                 '}';
     }
 }
