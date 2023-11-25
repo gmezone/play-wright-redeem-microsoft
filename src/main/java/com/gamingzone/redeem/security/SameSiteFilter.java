@@ -39,15 +39,22 @@ public class SameSiteFilter extends GenericFilterBean {
             HttpServletRequest req = (HttpServletRequest) request;
             HttpServletResponse resp = (HttpServletResponse) response;
             String requestUrl = req.getRequestURL().toString();
-                Cookie[] cookies = ((HttpServletRequest) request).getCookies();
-                if (cookies != null && cookies.length > 0) {
+            String cookieHeader = resp.getHeader(HttpHeaders.SET_COOKIE);
+            System.out.println("cookieHeader");
+            System.out.println(cookieHeader);
+               /*
+               if (cookies != null && cookies.length > 0) {
                     List<Cookie> cookieList = Arrays.asList(cookies);
                     Cookie sessionCookie = cookieList.stream().filter(cookie -> SESSION_COOKIE_NAME.equals(cookie.getName())).findFirst().orElse(null);
+                    System.out.println("sessionCookie: " + sessionCookie );
+
                     if (sessionCookie != null) {
                         String contextPath = request.getServletContext() != null && StringUtils.isNotBlank(request.getServletContext().getContextPath()) ? request.getServletContext().getContextPath() : ROOT_CONTEXT;
                         resp.setHeader(HttpHeaders.SET_COOKIE, sessionCookie.getName() + "=" + sessionCookie.getValue() + SESSION_PATH_ATTRIBUTE + contextPath + SAME_SITE_ATTRIBUTE_VALUES);
                     }
                 }
+                */
+
             chain.doFilter(request, response);
         }
 }

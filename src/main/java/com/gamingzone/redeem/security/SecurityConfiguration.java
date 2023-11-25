@@ -49,7 +49,7 @@ public class SecurityConfiguration {
                         .anyRequest().authenticated()
                 )
                 .addFilterBefore(authFilter, UsernamePasswordAuthenticationFilter.class)
-                 .addFilterAfter(sameSiteFilter, BasicAuthenticationFilter.class)
+                // .addFilterAfter(sameSiteFilter, BasicAuthenticationFilter.class)
                 .build();
     }
 

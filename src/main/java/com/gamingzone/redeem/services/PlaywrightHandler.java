@@ -11,6 +11,7 @@ import com.microsoft.playwright.options.Proxy;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
+import org.apache.commons.lang3.StringUtils;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
@@ -18,6 +19,7 @@ import org.jsoup.select.Elements;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.oauth2.common.exceptions.InvalidTokenException;
@@ -33,6 +35,9 @@ import java.util.concurrent.TimeUnit;
 
 @Service
 public class PlaywrightHandler {
+
+    private final String SAME_SITE_ATTRIBUTE_VALUES = ";HttpOnly;Secure;SameSite=None";
+    private final String ROOT_CONTEXT = "/";
 
     protected Logger logger = LoggerFactory.getLogger(PlaywrightHandler.class);
     protected Playwright playwright = Playwright.create();
@@ -253,6 +258,14 @@ public class PlaywrightHandler {
 //                NETWORKIDLE);
             response.setHeader("Access-Control-Allow-Origin", "*");
             response.setHeader("Access-Control-Allow-Methods", "*");
+            String cookieHeader = response.getHeader(HttpHeaders.SET_COOKIE);
+            //String contextPath = request.getServletContext() != null && StringUtils.isNotBlank(request.getServletContext().getContextPath()) ? request.getServletContext().getContextPath() : ROOT_CONTEXT;
+            if(cookieHeader != null)
+                response.setHeader(HttpHeaders.SET_COOKIE, cookieHeader +  SAME_SITE_ATTRIBUTE_VALUES);
+
+            System.out.println("cookieHeader");
+            System.out.println(cookieHeader);
+
             Document doc = Jsoup.parse(content);
             System.out.println("before fix  doc.outerHtml()");
             System.out.println(doc.outerHtml());
