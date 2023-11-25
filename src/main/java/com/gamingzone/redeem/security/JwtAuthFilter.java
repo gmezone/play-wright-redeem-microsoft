@@ -41,19 +41,8 @@ public class JwtAuthFilter extends OncePerRequestFilter {
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
 
-        HttpServletRequest req = (HttpServletRequest) request;
-        HttpServletResponse resp = (HttpServletResponse) response;
-        String requestUrl = req.getRequestURL().toString();
-        System.out.println("requestUtl: " + requestUrl );
-            Cookie[] cookies = ((HttpServletRequest) request).getCookies();
-            if (cookies != null && cookies.length > 0) {
-                List<Cookie> cookieList = Arrays.asList(cookies);
-                Cookie sessionCookie = cookieList.stream().filter(cookie -> SESSION_COOKIE_NAME.equals(cookie.getName())).findFirst().orElse(null);
-                if (sessionCookie != null) {
-                    String contextPath = request.getServletContext() != null && StringUtils.isNotBlank(request.getServletContext().getContextPath()) ? request.getServletContext().getContextPath() : ROOT_CONTEXT;
-                    resp.setHeader(HttpHeaders.SET_COOKIE, sessionCookie.getName() + "=" + sessionCookie.getValue() + SESSION_PATH_ATTRIBUTE + contextPath + SAME_SITE_ATTRIBUTE_VALUES);
-                }
-            }
+       // HttpServletRequest req = (HttpServletRequest) request;
+       // HttpServletResponse resp = (HttpServletResponse) response;
 
         /*
         String userName = null;
