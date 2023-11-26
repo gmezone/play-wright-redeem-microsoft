@@ -258,13 +258,13 @@ public class PlaywrightHandler {
 //                NETWORKIDLE);
             response.setHeader("Access-Control-Allow-Origin", "*");
             response.setHeader("Access-Control-Allow-Methods", "*");
-            String cookieHeader = response.getHeader(HttpHeaders.SET_COOKIE);
-            //String contextPath = request.getServletContext() != null && StringUtils.isNotBlank(request.getServletContext().getContextPath()) ? request.getServletContext().getContextPath() : ROOT_CONTEXT;
-            if(cookieHeader != null)
-                response.setHeader(HttpHeaders.SET_COOKIE, cookieHeader +  SAME_SITE_ATTRIBUTE_VALUES);
+//            String cookieHeader = response.getHeader(HttpHeaders.SET_COOKIE);
+//            //String contextPath = request.getServletContext() != null && StringUtils.isNotBlank(request.getServletContext().getContextPath()) ? request.getServletContext().getContextPath() : ROOT_CONTEXT;
+//            if(cookieHeader != null)
+//                response.setHeader(HttpHeaders.SET_COOKIE, cookieHeader +  SAME_SITE_ATTRIBUTE_VALUES);
 
-            System.out.println("cookieHeader");
-            System.out.println(cookieHeader);
+//            System.out.println("cookieHeader");
+ //           System.out.println(cookieHeader);
 
             Document doc = Jsoup.parse(content);
             System.out.println("before fix  doc.outerHtml()");
