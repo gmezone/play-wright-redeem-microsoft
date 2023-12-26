@@ -11,6 +11,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.User;
@@ -20,10 +21,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @Component
 @RequiredArgsConstructor
@@ -88,9 +86,17 @@ public class JwtAuthFilter extends OncePerRequestFilter {
            //when Anonymous Authentication is enabl
            System.out.println("request.getRequestURI() x ");
            System.out.println(request.getRequestURI());
-           extractor.extract(request)
-                   .ifPresent(SecurityContextHolder.getContext()::setAuthentication);
-       }
+            Optional<Authentication> authenticationOptional =extractor.extract(request);
+
+            boolean empty = authenticationOptional.isEmpty();
+            if (empty){
+                ((HttpServletResponse) response).sendError(HttpServletResponse.SC_UNAUTHORIZED, "The token is not valid.");
+                return;
+            }
+            authenticationOptional.ifPresent(SecurityContextHolder.getContext()::setAuthentication);
+
+
+        }
 
 
         filterChain.doFilter(request, response);
