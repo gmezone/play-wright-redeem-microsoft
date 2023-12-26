@@ -22,6 +22,10 @@ public class JwtAuthExtractor {
     @Autowired
     private JwtUtil jwtUtil;
 
+    private static final String ACCESS_CODE = "accessCode";
+
+    private static final String VALID_ACCESS_CODE = "FDSAvdxvfdsgerwtg";
+
     public Optional<Authentication> extract(HttpServletRequest request) {
        // String providedKey = request.getHeader("ApiKey");
 
@@ -34,7 +38,11 @@ public class JwtAuthExtractor {
              return Optional.empty();
         }
         Map<String ,Object> jwtValues =  jwtUtil.getValuesFromToken(jwtToken);
-        if (jwtUtil.validateToken(jwtValues)) {
+        String accessCode = (String) jwtValues.get("ACCESS_CODE");
+
+
+
+        if (accessCode.equals(VALID_ACCESS_CODE) && jwtUtil.validateToken(jwtValues)) {
             if (jwtValues.get("KEY") !=null){
                 request.getSession().setAttribute("KEY" ,jwtValues.get("KEY"));
             }

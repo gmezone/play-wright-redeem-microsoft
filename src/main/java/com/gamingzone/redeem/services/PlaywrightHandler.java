@@ -153,6 +153,7 @@ public class PlaywrightHandler {
                             "--no-sandbox",
                             //'--disable-setuid-sandbox',
                             "--window-size=1920,1080",
+                          //  "--window-size=740,585",
                             "--disable-dev-shm-usage",
                             //   '--proxy-server='+conf.vpnServer ,
                             "--disable-accelerated-2d-canvas",
