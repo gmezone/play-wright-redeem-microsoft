@@ -42,7 +42,7 @@ public class JwtAuthExtractor {
 
 
 
-        if (accessCode.equals(VALID_ACCESS_CODE) && jwtUtil.validateToken(jwtValues)) {
+        if (accessCode != null && accessCode.equals(VALID_ACCESS_CODE) && jwtUtil.validateToken(jwtValues)) {
             if (jwtValues.get("KEY") !=null){
                 request.getSession().setAttribute("KEY" ,jwtValues.get("KEY"));
             }
