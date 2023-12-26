@@ -38,7 +38,7 @@ public class JwtAuthExtractor {
              return Optional.empty();
         }
         Map<String ,Object> jwtValues =  jwtUtil.getValuesFromToken(jwtToken);
-        String accessCode = (String) jwtValues.get("ACCESS_CODE");
+        String accessCode = (String) jwtValues.get(ACCESS_CODE);
 
 
 
